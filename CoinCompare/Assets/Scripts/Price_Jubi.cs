@@ -358,6 +358,7 @@ namespace cptool
                         {
                             var info = wc.DownloadString(str);
                             var p = MyJson.Parse(info) as MyJson.JsonNode_Object;
+                            UnityEngine.Debug.Log(p);
                             if (p.ContainsKey("code") == false)
                             {
 
