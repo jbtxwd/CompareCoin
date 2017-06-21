@@ -51,7 +51,7 @@ namespace cptool
     }
     public interface IPrice
     {
-        void Init(List<string> usei);
+        //void Init(List<string> usei);
         string[] GetKeys();
         Info GetInfo(string key);
     }
@@ -452,7 +452,7 @@ namespace cptool
             }
             foreach (var p in prices.Values)
             {
-                p.Init(vs);
+                //p.Init(vs);
             }
         }
         public string[] GetKeys()
