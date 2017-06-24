@@ -12,8 +12,10 @@ namespace cptool
 
         public void Awake()
         {
-            Coin19800 coin19800 = new Coin19800();
-            coin19800.Init();
+            //Coin19800 coin19800 = new Coin19800();
+            //coin19800.Init();
+            CoinJubi coinJubi = new CoinJubi();
+            coinJubi.Init();
         }
         public void Init()
         {

@@ -1,0 +1,86 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+using cptool;
+using System.Linq;
+using Common;
+public class CoinJubi : IPrice
+{
+    private string baseUrl = "https://www.jubi.com/api/v1/ticker/?coin=";
+    Dictionary<string, Info> infos = new Dictionary<string, Info>();
+
+    public void Init()
+    {
+        infos["YTC "] = new Info("YTC ", "一号币  ");
+        infos["ETC "] = new Info("ETC ", "以太经典");
+        infos["PLC "] = new Info("PLC ", "保罗币  ");
+        infos["VTC "] = new Info("VTC ", "绿币    ");
+        infos["BTC "] = new Info("BTC ", "比特币  ");
+        infos["ETH "] = new Info("ETH ", "以太坊  ");
+        infos["ANS "] = new Info("ANS ", "小蚁股  ");
+        infos["BTS "] = new Info("BTS ", "比特股  ");
+        CoroutineManager.instance.StartCoroutine(YieldTick());
+    }
+
+    void Tick()
+    {
+        foreach (var c in infos)
+        {
+            Get(c.Key.ToLower().Replace(" ", ""), (_result) =>
+            {
+                Debug.Log(_result.text);
+                var _json = MyJson.Parse(_result.text) as MyJson.JsonNode_Object;
+                this.infos[c.Key].price = double.Parse(_json.GetDictItem("last").AsString());
+                this.infos[c.Key].sell = double.Parse(_json.GetDictItem("sell").AsString());
+                this.infos[c.Key].buy = double.Parse(_json.GetDictItem("buy").AsString());
+                this.infos[c.Key].vol = double.Parse(_json.GetDictItem("vol").ToString());
+                this.infos[c.Key].updatetime = DateTime.Now;
+                this.infos[c.Key].change = true;
+                Debug.Log(this.infos[c.Key].price + c.Key);
+            });
+        }
+    }
+
+    IEnumerator YieldTick()
+    {
+        while (true)
+        {
+            yield return new WaitForSecondsRealtime(1.0f);
+            Tick();
+        }
+    }
+
+    public string[] GetKeys()
+    {
+        return infos.Keys.ToArray();
+    }
+    public Info GetInfo(string key)
+    {
+        if (infos.ContainsKey(key) == false) return null;
+        return infos[key].Clone();
+    }
+
+    public void Get(string key, Action<WWW> result)
+    {
+        int r = UnityEngine.Random.Range(0, 100);
+        string url = baseUrl + key+ "&nonce=" + r;
+        CoroutineManager.instance.DoCoroutine(PostWWW(url,result));
+        //StartCoroutine(PostWWW(url, result));
+    }
+
+    IEnumerator PostWWW(string url, Action<WWW> result)
+    {
+        var www = new WWW(url);
+        yield return www;
+        if (string.IsNullOrEmpty(www.error))
+        {
+            if (result != null)
+                result(www);
+        }
+        else
+        {
+            Debug.Log("post error+" + www.error.ToString() + "==url==" + url);
+        }
+    }
+}
