@@ -10,7 +10,7 @@ public class Coin19800 :IPrice
     private string baseUrl = "https://www.19800.com/api/v1/ticker?market=cny_";
     Dictionary<string, Info> infos = new Dictionary<string, Info>();
 
-    private void Init()
+    public void Init()
     {
         infos["YTC "] = new Info("YTC ", "一号币  ");
         infos["ETC "] = new Info("ETC ", "以太经典");
@@ -20,7 +20,7 @@ public class Coin19800 :IPrice
         infos["ETH "] = new Info("ETH ", "以太坊  ");
         infos["ANS "] = new Info("ANS ", "小蚁股  ");
         infos["BTS "] = new Info("BTS ", "比特股  ");
-        Tick();
+        CoroutineManager.instance.StartCoroutine(YieldTick());
     }
 
     void Tick()
@@ -42,6 +42,15 @@ public class Coin19800 :IPrice
                     Debug.Log(dat["LastPrice"].AsDouble()+c.Key);
                 }
             });
+        }
+    }
+
+    IEnumerator YieldTick()
+    {
+        while (true)
+        {
+            yield return new WaitForSecondsRealtime(1.0f);
+            Tick();
         }
     }
 
