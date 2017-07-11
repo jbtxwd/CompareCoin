@@ -1,0 +1,37 @@
+https://www.bitfinex.com
+
+jbtxwd jB840816~
+
+帐户令牌（密钥）: yjnp4ib7xdvk5gmd
+
+
+https://btc-e.com/
+jbtxwd@hotmail.com
+HL0AlQZ1wTcK
+
+聚币
+
+hcdia-zq5y2-s9462-rzpf3-3tf4x-gnfpq-k73yr 公
+v*zF%-CmbKz-epx}W-E(H(4-AxU{6-yCkFz-~}uyv
+
+okcoin
+中国站 apiKey:  b07019e6-76cb-4f46-b438-7d96ce61f8b4
+中国站 secretKey:  E1741716291DC078C43662F290625384
+
+18665395943
+
+中国比特币
+
+18665395943
+
+密码jb840816  安全密码840816
+
+API访问密钥(Access Key)： 10823b7c-bf93-4dd0-b5af-83dc487a9f7e
+API私有密钥(Secret Key)： 2ffdfa1e-ba2c-42c5-98fc-61679b8c30d4
+
+火币
+18665395943
+密码jb840816 安全密码jB840816
+API 访问密钥(Access Key) : 68070fe8-5ca496e2-43b98fbc-e56c9
+API 秘密密钥(Secret Key) : 96b3c137-5bbbb6f8-3ef76b50-974e7
+IP地址 : 180.157.91.254
