@@ -8,7 +8,9 @@ public class TestCHBTC1 : MonoBehaviour {
 	void Start ()
     {
         chbtc = new CoinCHBTC();
-	}
+        chbtc.Initial();
+
+    }
 	
 	// Update is called once per frame
 	void Update () {

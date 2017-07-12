@@ -6,12 +6,13 @@ using cptool;
 using System.Linq;
 using Common;
 using BestHTTP;
+using UniRx;
 public class CoinCHBTC
 {
     const string baseUrl = "http://api.chbtc.com/";
-    Dictionary<string, Info> infos = new Dictionary<string, Info>();
     Dictionary<string, Depth> depths = new Dictionary<string, Depth>();//深度数据
     List<string> keys = new List<string>();
+    float depthInterval =1f;//调用depth的时间间隔
     public CoinCHBTC()
     {
         keys.Add("btc_cny");
@@ -20,6 +21,13 @@ public class CoinCHBTC
         keys.Add("etc_cny");
         keys.Add("bts_cny");
         keys.Add("eos_cny");
+    }
+    public void Initial()
+    {
+        Observable.Interval(TimeSpan.FromSeconds(depthInterval)).Subscribe(_ =>
+        {
+            UpdateDepths();
+        });   
     }
 
     string DepthUrl(string _coinName)
@@ -41,10 +49,10 @@ public class CoinCHBTC
         string _url = DepthUrl(_coinName);
         new HTTPRequest(new Uri(_url), (reqest, response) =>
         {
+            Debug.Log(response.DataAsText);
             var _jsonData = SimpleJSON.JSON.Parse(response.DataAsText);
             var _asks = _jsonData["asks"];
             var _bids = _jsonData["bids"];
-            Debug.Log(_asks);
             Depth _depth = new Depth();
             List<Price> _asksList = new List<Price>();
             for (int i = 0; i < _asks.Count; i++)
@@ -65,7 +73,6 @@ public class CoinCHBTC
                 _bidsList.Add(_price);
             }
             _depth.bids = _bidsList;
-            Debug.Log(_coinName);
             depths[_coinName] = _depth;
         }).Send();
     }
@@ -73,11 +80,6 @@ public class CoinCHBTC
     public List<string> GetKeys()
     {
         return keys;
-    }
-
-    public Info GetInfo(string _s)
-    {
-        return null;
     }
 
     public Depth GetDepth(string _coinName)
