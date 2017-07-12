@@ -22,6 +22,7 @@ public class Tools
          string tmpString = "";
          ASCIIEncoding Asc = new ASCIIEncoding();
          tmpString = Asc.GetString(Byte);
+
          return tmpString;
      }
 
