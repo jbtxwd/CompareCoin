@@ -45,7 +45,7 @@ public class CoinHuobi
     const string socketAPI = "wss://api.huobi.com/ws";//BTC、LTC Websocket
     Dictionary<string, Depth> depths = new Dictionary<string, Depth>();//深度数据
     List<string> keys = new List<string>();
-
+    WebSocket webSocketBE;
     public CoinHuobi()
     {
 
@@ -53,32 +53,23 @@ public class CoinHuobi
 
     public void Initial()
     {
-        var _webSocketBE = new WebSocket(new Uri(socketBE));
-        _webSocketBE.OnOpen += OnWebSocketBEOpen;
-        _webSocketBE.OnMessage += OnMessageReceived;
-        _webSocketBE.OnBinary += OnBinaryMessageReceived;
-
-        _webSocketBE.Open();
-
+        webSocketBE = new WebSocket(new Uri(socketBE));
+        webSocketBE.OnOpen += OnWebSocketBEOpen;
+        webSocketBE.OnBinary += OnBEBinaryMessageReceived;
+        webSocketBE.Open();
     }
 
     void OnWebSocketBEOpen(WebSocket _ws)
     {
-        SubModel _sm = new SubModel("market.ethcny.kline.1min", 10086);
+        
+        SubModel _sm = new SubModel("market.ethcny.depth.step1", 10086);
         string _json = JsonUtility.ToJson(_sm);
         _ws.Send(_json);
-        Debug.Log(_json);
     }
 
-    private void OnMessageReceived(WebSocket webSocket, string message)
-    {
-        Debug.Log("Text Message received from server: " + message);
-    }
-
-    private void OnBinaryMessageReceived(WebSocket webSocket, byte[] message)
+    private void OnBEBinaryMessageReceived(WebSocket webSocket, byte[] message)
     {
         GZipInputStream gzi = new GZipInputStream(new MemoryStream(message));
-
         MemoryStream re = new MemoryStream();
         int count = 0;
         byte[] data = new byte[4096];
@@ -95,8 +86,15 @@ public class CoinHuobi
             _pong.pong = _ping.ping;
             string _json = JsonUtility.ToJson(_pong);
             webSocket.Send(_json);
-            Debug.Log(_ping.ping);
         }
-        Debug.Log(_result);
+        else
+        {
+            Debug.Log("time==" + Time.time + _result);
+        }
+    }
+
+    void OnDestroy()
+    {
+        webSocketBE.Close();
     }
 }
