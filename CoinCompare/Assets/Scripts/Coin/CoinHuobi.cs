@@ -29,6 +29,15 @@ public class ReqModel
     public long id;
 }
 
+public class Ping
+{
+    public long ping;
+}
+public class Pong
+{
+	public long pong;
+}
+
 public class CoinHuobi
 {
 
@@ -68,8 +77,6 @@ public class CoinHuobi
 
     private void OnBinaryMessageReceived(WebSocket webSocket, byte[] message)
     {
-        Debug.Log("Binary Message received from server. Length: " + message.Length);
-
         GZipInputStream gzi = new GZipInputStream(new MemoryStream(message));
 
         MemoryStream re = new MemoryStream();
@@ -80,6 +87,16 @@ public class CoinHuobi
             re.Write(data, 0, count);
         }
         byte[] depress = re.ToArray();
-        Debug.Log(Encoding.UTF8.GetString(depress));
+        string _result = Encoding.UTF8.GetString(depress);
+        if (_result.Contains("ping"))
+        {
+            Ping _ping = JsonUtility.FromJson<Ping>(_result);
+            Pong _pong = new Pong();
+            _pong.pong = _ping.ping;
+            string _json = JsonUtility.ToJson(_pong);
+            webSocket.Send(_json);
+            Debug.Log(_ping.ping);
+        }
+        Debug.Log(_result);
     }
 }
