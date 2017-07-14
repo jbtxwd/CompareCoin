@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using BestHTTP.WebSocket;
 using Newtonsoft.Json;
-public class CoinCHBTCDepthRequest
+public class PlatFormCHBTCDepthRequest
 {
     public string fucker;
 	public string channel;
 }
 
-public class CoinCHBTC : Coin, ICoin
+public class PlatformCHBTC : PlatForm, ICoin
 {
     const string socketURL = "wss://api.chbtc.com:9999/websocket";
 	WebSocket webSocket;
@@ -39,7 +39,7 @@ public class CoinCHBTC : Coin, ICoin
     public override void AddChannel(string _coin)
     {
         base.AddChannel(_coin);
-        CoinCHBTCDepthRequest _ccr = new CoinCHBTCDepthRequest();
+        PlatFormCHBTCDepthRequest _ccr = new PlatFormCHBTCDepthRequest();
         _ccr.fucker = "addChannel";
         switch (_coin)
         {

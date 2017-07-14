@@ -8,7 +8,7 @@ public class TestChBTC : MonoBehaviour
 {
 	void Start ()
     {
-        CoinCHBTC cc = new CoinCHBTC();	
+        PlatformCHBTC cc = new PlatformCHBTC();	
         cc.Initial();
 	}
 

@@ -47,14 +47,14 @@ public class Tick
     public List<List<float>> asks;
 }
 
-public class CoinHuobi : Coin, ICoin
+public class PlatformHuobi : PlatForm, ICoin
 {
     const string socketAPI = "wss://api.huobi.com/ws";//BTC、LTC Websocket
     const string socketBE = "wss://be.huobi.com/ws";//ETH、ETC Websocket行情请求地址
     WebSocket webSocketBE;
     WebSocket webSocketAPI;
 
-    public CoinHuobi()
+    public PlatformHuobi()
     {
 
     }

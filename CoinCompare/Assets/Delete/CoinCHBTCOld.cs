@@ -9,7 +9,7 @@ using BestHTTP;
 using UniRx;
 using Newtonsoft.Json;
 using BestHTTP.WebSocket;
-public class CoinCHBTCOld :Coin,ICoin
+public class CoinCHBTCOld :PlatForm,ICoin
 {
     const string baseUrl = "http://api.chbtc.com/";
     List<string> keys = new List<string>();

@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class TestHuobi : MonoBehaviour
 {
-    CoinHuobi coinHuobi;
+    PlatformHuobi coinHuobi;
 	void Start () 
     {
-        coinHuobi = new CoinHuobi();
+        coinHuobi = new PlatformHuobi();
         coinHuobi.Initial();
 	}
 
