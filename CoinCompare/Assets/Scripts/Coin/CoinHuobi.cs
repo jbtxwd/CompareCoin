@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using UnityEngine;
 using BestHTTP.WebSocket;
 using System;
@@ -28,10 +28,6 @@ public class ReqModel
     public long id;
 }
 
-public class Ping
-{
-    public long ping;
-}
 public class Pong
 {
 	public long pong;
@@ -91,19 +87,18 @@ public class CoinHuobi
         }
         byte[] depress = re.ToArray();
         string _result = Encoding.UTF8.GetString(depress);
-        if (_result.Contains("ping"))
+        Dictionary<string, object> _dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(_result);
+        if (_dic.ContainsKey("ping"))
         {
-            Ping _ping = JsonConvert.DeserializeObject<Ping>(_result);
+            long _ping = long.Parse(_dic["ping"].ToString());
             Pong _pong = new Pong();
-            _pong.pong = _ping.ping;
+            _pong.pong = _ping;
             string _json = JsonConvert.SerializeObject(_pong);
             webSocket.Send(_json);
         }
-        else
+        else if(_dic.ContainsKey("tick"))
         {
-            Debug.Log(_result);
             TickDetail _Td = JsonConvert.DeserializeObject<TickDetail>(_result);
-            //TickDetail _Td = JsonUtility.FromJson<TickDetail>(_result);
             if (!string.IsNullOrEmpty(_Td.ch))
             {
                 Debug.Log(_Td.tick.bids.Count);
