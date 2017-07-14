@@ -98,20 +98,37 @@ public class CoinHuobi
         }
         else if(_dic.ContainsKey("tick"))
         {
-            TickDetail _Td = JsonConvert.DeserializeObject<TickDetail>(_result);
-            if (!string.IsNullOrEmpty(_Td.ch))
+            TickDetail _td = JsonConvert.DeserializeObject<TickDetail>(_result);
+            if (!string.IsNullOrEmpty(_td.ch))
             {
-                Debug.Log(_Td.tick.bids.Count);
+                Debug.Log(_result);
                 string _coinName="";
-                switch (_Td.ch)
+                switch (_td.ch)
                 {
                     case "market.ethcny.depth.step1":
                         _coinName = Coins.ETH;
                         break;
                 }
                 Depth _dt = new Depth();
+                List<Price> _bidList = new List<Price>();
+                for (int i = 0; i < _td.tick.bids.Count;i++)
+                {
+                    Price _p = new Price();
+                    _p.price = _td.tick.bids[i][0];
+                    _p.count = _td.tick.bids[i][1];
+                    _bidList.Add(_p);
+                }
+                _dt.bids = _bidList;
+                List<Price> _askList = new List<Price>();
+                for (int i = 0; i < _td.tick.asks.Count;i++)
+                {
+					Price _p = new Price();
+					_p.price = _td.tick.asks[i][0];
+					_p.count = _td.tick.asks[i][1];
+					_askList.Add(_p);
+                }
+                _dt.asks = _askList;
                 depths[_coinName] = _dt;
-                //Debug.Log("卖=="+_Td.tick.asks[0][0]+"**"+ _Td.tick.asks[0][1]+ "买==" + _Td.tick.bids[0][0] + "**" + _Td.tick.bids[0][1]);
             }
         }
     }
