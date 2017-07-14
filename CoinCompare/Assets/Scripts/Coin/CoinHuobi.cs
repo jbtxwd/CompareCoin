@@ -48,12 +48,14 @@ public class Tick
 
 public class CoinHuobi
 {
-
-    const string socketBE = "wss://be.huobi.com/ws";//ETH、ETC Websocket行情请求地址
-    const string socketAPI = "wss://api.huobi.com/ws";//BTC、LTC Websocket
+	const string socketAPI = "wss://api.huobi.com/ws";//BTC、LTC Websocket
+	const string socketBE = "wss://be.huobi.com/ws";//ETH、ETC Websocket行情请求地址
     Dictionary<string, Depth> depths = new Dictionary<string, Depth>();//深度数据
-    List<string> keys = new List<string>();
+    List<string> concerCoins = new List<string>();
     WebSocket webSocketBE;
+	WebSocket webSocketAPI;
+
+
     public CoinHuobi()
     {
 
@@ -61,21 +63,109 @@ public class CoinHuobi
 
     public void Initial()
     {
+        concerCoins.Add(Coins.BTC);
+        concerCoins.Add(Coins.LTC);
+        concerCoins.Add(Coins.ETH);
+        concerCoins.Add(Coins.ETC);
+		webSocketAPI = new WebSocket(new Uri(socketAPI));
+		webSocketAPI.OnOpen += OnWebSocketAPIOpen;
+		webSocketAPI.OnBinary += OnBinaryMessageReceived;
+		webSocketAPI.Open();
+
         webSocketBE = new WebSocket(new Uri(socketBE));
         webSocketBE.OnOpen += OnWebSocketBEOpen;
-        webSocketBE.OnBinary += OnBEBinaryMessageReceived;
+        webSocketBE.OnBinary += OnBinaryMessageReceived;
         webSocketBE.Open();
     }
 
+	void OnWebSocketAPIOpen(WebSocket _ws)
+	{
+        if (concerCoins.Contains(Coins.BTC))
+            AddCoinDepth(Coins.BTC);
+        if (concerCoins.Contains(Coins.LTC))
+            AddCoinDepth(Coins.LTC);
+	}
+
     void OnWebSocketBEOpen(WebSocket _ws)
     {
-        
-        SubModel _sm = new SubModel("market.ethcny.depth.step1", 10086);
-        string _json = JsonUtility.ToJson(_sm);
-        _ws.Send(_json);
+        if (concerCoins.Contains(Coins.ETH))
+            AddCoinDepth(Coins.ETH);
+        if (concerCoins.Contains(Coins.ETC))
+			AddCoinDepth(Coins.ETC);
     }
 
-    private void OnBEBinaryMessageReceived(WebSocket webSocket, byte[] message)
+    public void AddCoinDepth(string _name)
+    {
+        concerCoins.Add(_name);
+        switch(_name)
+        {
+            case Coins.BTC:
+                if (webSocketAPI.IsOpen)
+				{
+					SubModel _sm = new SubModel("market.btccny.depth.step1", 10001);
+					string _json = JsonUtility.ToJson(_sm);
+					webSocketAPI.Send(_json);
+				}
+				else
+				{
+					Debug.Log("webSocketAPI not Opened!");
+				}
+                break;
+            case Coins.LTC:
+				if (webSocketAPI.IsOpen)
+				{
+					SubModel _sm = new SubModel("market.ltccny.depth.step1", 10002);
+					string _json = JsonUtility.ToJson(_sm);
+					webSocketAPI.Send(_json);
+				}
+				else
+				{
+					Debug.Log("webSocketAPI not Opened!");
+				}
+				break;
+			case Coins.ETH:
+				if (webSocketBE.IsOpen)
+				{
+					SubModel _sm = new SubModel("market.ethcny.depth.step1", 10003);
+					string _json = JsonUtility.ToJson(_sm);
+					webSocketBE.Send(_json);
+				}
+				else
+				{
+					Debug.Log("webSocketBE not Opened!");
+				}
+				break;
+            case Coins.ETC:
+				if (webSocketBE.IsOpen)
+				{
+					SubModel _sm = new SubModel("market.etccny.depth.step1", 10004);
+					string _json = JsonUtility.ToJson(_sm);
+					webSocketBE.Send(_json);
+				}
+				else
+				{
+					Debug.Log("webSocketBE not Opened!");
+				}
+				break;
+        }
+    }
+
+    public void RemoveCoinDepth(string _name)
+    {
+        concerCoins.Remove(_name);
+		switch (_name)
+		{
+			case Coins.BTC:
+				break;
+			case Coins.LTC:
+				break;
+			case Coins.ETC:
+				break;
+			case Coins.ETH:
+				break;
+		}
+    }
+    private void OnBinaryMessageReceived(WebSocket webSocket, byte[] message)
     {
         GZipInputStream gzi = new GZipInputStream(new MemoryStream(message));
         MemoryStream re = new MemoryStream();
@@ -108,6 +198,15 @@ public class CoinHuobi
                     case "market.ethcny.depth.step1":
                         _coinName = Coins.ETH;
                         break;
+					case "market.etccny.depth.step1":
+                        _coinName = Coins.ETC;
+						break;
+					case "market.ltccny.depth.step1":
+                        _coinName = Coins.LTC;
+						break;
+					case "market.btccny.depth.step1":
+                        _coinName = Coins.BTC;
+						break;
                 }
                 Depth _dt = new Depth();
                 List<Price> _bidList = new List<Price>();
@@ -128,13 +227,15 @@ public class CoinHuobi
 					_askList.Add(_p);
                 }
                 _dt.asks = _askList;
+                _dt.time = long.Parse(_dic["ts"].ToString());
                 depths[_coinName] = _dt;
             }
         }
     }
 
-    void OnDestroy()
+    public void Close()
     {
+        webSocketAPI.Close();
         webSocketBE.Close();
     }
 }

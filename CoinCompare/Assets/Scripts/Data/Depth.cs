@@ -10,6 +10,7 @@ public class Price
 
 public class Depth
 {
+    public long time;
     public List<Price> asks = new List<Price>();
     public List<Price> bids = new List<Price>();
 }
