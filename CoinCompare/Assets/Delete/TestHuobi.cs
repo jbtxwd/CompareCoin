@@ -13,6 +13,7 @@ public class TestHuobi : MonoBehaviour
 
     private void OnDestroy()
     {
-        coinHuobi.Close();
+        if(coinHuobi!=null)
+            coinHuobi.Close();
     }
 }

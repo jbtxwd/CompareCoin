@@ -8,4 +8,5 @@ public class Coins
     public const string ETC = "ETC";//以太经典
     public const string LTC = "LTC";//莱特币
     public const string ETH = "ETH";//以太坊
+    public const string BTS = "BTS";//比特股
 }

@@ -59,7 +59,7 @@ public class CoinHuobi : Coin, ICoin
 
     }
 
-    public void Initial()
+    public override void Initial()
     {
         concerCoins.Add(Coins.BTC);
         concerCoins.Add(Coins.LTC);

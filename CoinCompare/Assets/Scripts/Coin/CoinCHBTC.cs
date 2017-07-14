@@ -1,89 +1,86 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using cptool;
-using System.Linq;
-using Common;
-using BestHTTP;
-using UniRx;
-public class CoinCHBTC
+using BestHTTP.WebSocket;
+using Newtonsoft.Json;
+public class CoinCHBTCDepthRequest
 {
-    const string baseUrl = "http://api.chbtc.com/";
-    Dictionary<string, Depth> depths = new Dictionary<string, Depth>();//深度数据
-    List<string> keys = new List<string>();
-    float depthInterval =1f;//调用depth的时间间隔
-    public CoinCHBTC()
-    {
-        keys.Add("btc_cny");
-        keys.Add("ltc_cny");
-        keys.Add("eth_cny");
-        keys.Add("etc_cny");
-        keys.Add("bts_cny");
-        keys.Add("eos_cny");
-    }
-    public void Initial()
-    {
-        Observable.Interval(TimeSpan.FromSeconds(depthInterval)).Subscribe(_ =>
-        {
-            UpdateDepths();
-        });   
-    }
+    public string fucker;
+	public string channel;
+}
 
-    string DepthUrl(string _coinName)
-    {
-        return baseUrl + "data/v1/depth?currency=" + _coinName + "&size=3&merge=0.1";
-    }
+public class CoinCHBTC : Coin, ICoin
+{
+    const string socketURL = "wss://api.chbtc.com:9999/websocket";
+	WebSocket webSocket;
 
-    public void UpdateDepths()
+    public override void Initial()
     {
-        List<string> _keys = GetKeys();
-        for (int i = 0; i < _keys.Count; i++)
+        if (isConcer)
         {
-            GetCoinDepth(_keys[i]);
+            webSocket = new WebSocket(new System.Uri(socketURL));
+            webSocket.OnOpen += OnWebServerOpen;
+            webSocket.OnError += OnWebServerError;
+            webSocket.OnClosed += OnWebSocketClosed;
+            webSocket.OnMessage += OnMessageReceived;
+            webSocket.Open();
+            this.concerCoins.Add(Coins.BTC);
         }
     }
 
-    public void GetCoinDepth(string _coinName)
+    void OnWebServerOpen(WebSocket _ws)
     {
-        string _url = DepthUrl(_coinName);
-        new HTTPRequest(new Uri(_url), (reqest, response) =>
+        for (int i = 0; i < concerCoins.Count; i++)
         {
-            Debug.Log(response.DataAsText);
-            var _jsonData = SimpleJSON.JSON.Parse(response.DataAsText);
-            var _asks = _jsonData["asks"];
-            var _bids = _jsonData["bids"];
-            Depth _depth = new Depth();
-            List<Price> _asksList = new List<Price>();
-            for (int i = 0; i < _asks.Count; i++)
-            {
-                Price _price = new Price();
-                _price.price = float.Parse(_asks[i][0].Value.ToString());
-                _price.count = float.Parse(_asks[i][1].Value.ToString());
-                _asksList.Add(_price);
-            }
-            _depth.asks = _asksList;
-
-            List<Price> _bidsList = new List<Price>();
-            for (int i = 0; i < _bids.Count; i++)
-            {
-                Price _price = new Price();
-                _price.price = float.Parse(_bids[i][0].Value.ToString());
-                _price.count = float.Parse(_bids[i][1].Value.ToString());
-                _bidsList.Add(_price);
-            }
-            _depth.bids = _bidsList;
-            depths[_coinName] = _depth;
-        }).Send();
+            AddChannel(concerCoins[i]);
+        }
     }
 
-    public List<string> GetKeys()
+    public override void AddChannel(string _coin)
     {
-        return keys;
+        base.AddChannel(_coin);
+        CoinCHBTCDepthRequest _ccr = new CoinCHBTCDepthRequest();
+        _ccr.fucker = "addChannel";
+        switch (_coin)
+        {
+            case Coins.BTC:
+                _ccr.channel = "btc_cny_depth";
+                break;
+			case Coins.LTC:
+				_ccr.channel = "ltc_cny_depth";
+				break;
+            case Coins.ETH:
+				_ccr.channel = "eth_cny_depth";
+				break;
+			case Coins.ETC:
+				_ccr.channel = "etc_cny_depth";
+				break;
+            case Coins.BTS:
+                _ccr.channel = "bts_cny_depth";
+                break;
+        }
+        string _json = JsonConvert.SerializeObject(_ccr);
+        string _final = _json.Replace("fucker", "event");
+        webSocket.Send(_final);
     }
 
-    public Depth GetDepth(string _coinName)
+    public override void RemoveChannel(string _coin)
     {
-        return depths[_coinName];
+        base.AddChannel(_coin);
     }
+
+    void OnMessageReceived(WebSocket _ws, string _s)
+    {
+        Debug.Log(_s);
+    }
+
+	void OnWebServerError(WebSocket _ws, System.Exception _ex)
+	{
+		Debug.Log("onerror");
+	}
+
+	private void OnWebSocketClosed(WebSocket _ws, System.UInt16 _code, string _message)
+	{
+		Debug.Log("OnWebSocketClosed");
+	}
 }

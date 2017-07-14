@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TestCHBTC1 : MonoBehaviour {
-    CoinCHBTC chbtc;
+    //CoinCHBTC chbtc;
 	// Use this for initialization
 	void Start ()
     {
-        chbtc = new CoinCHBTC();
-        chbtc.Initial();
+        //chbtc = new CoinCHBTC();
+        //chbtc.Initial();
 
     }
 	
@@ -16,7 +16,7 @@ public class TestCHBTC1 : MonoBehaviour {
 	void Update () {
         if(Input.GetKeyDown("k"))
         {
-            chbtc.UpdateDepths();
+            //chbtc.UpdateDepths();
         }
 		
 	}
