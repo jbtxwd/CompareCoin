@@ -9,6 +9,19 @@ public class PlatFormCHBTCDepthRequest
 	public string channel;
 }
 
+public class CHBTCDepthDetail
+{
+	public string channel;
+	public string date;
+	public Tick tick;
+}
+
+public class CHBTCTick
+{
+	public List<List<float>> bids;
+	public List<List<float>> asks;
+}
+
 public class PlatformCHBTC : PlatForm, ICoin
 {
     const string socketURL = "wss://api.chbtc.com:9999/websocket";
@@ -72,11 +85,29 @@ public class PlatformCHBTC : PlatForm, ICoin
     void OnMessageReceived(WebSocket _ws, string _s)
     {
         Debug.Log(_s);
+        //string final = _s.Replace(@"","");
+        PlayerPrefs.SetString("fuck",_s);
+
+        string _fuck =_s.Replace(@"\\\",@"\");
+        Debug.Log(_fuck);
+        var _json = JsonConvert.DeserializeObject(_fuck) as Dictionary<string, object>;
+        Debug.Log(_json.Keys.Count);
+        /*if(_json.ContainsKey("channel")&& _json["channel"].ToString().Contains("depth"))
+        {
+            Debug.Log("---------");
+            GetDepth(_s);
+        }*/
+    }
+
+    void GetDepth(string _s)
+    {
+        CHBTCDepthDetail _chdd = JsonConvert.DeserializeObject<CHBTCDepthDetail>(_s);
+        Debug.Log(_chdd.tick.asks.Count);
     }
 
 	void OnWebServerError(WebSocket _ws, System.Exception _ex)
 	{
-		Debug.Log("onerror");
+        Debug.Log("onerror" + _ex.ToString());
 	}
 
 	private void OnWebSocketClosed(WebSocket _ws, System.UInt16 _code, string _message)
