@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestHuobi : MonoBehaviour {
+public class TestHuobi : MonoBehaviour
+{
+    CoinHuobi coinHuobi;
+	void Start () 
+    {
+        coinHuobi = new CoinHuobi();
+        coinHuobi.Initial();
+	}
 
-	// Use this for initialization
-	void Start () {
-        CoinHuobi ch = new CoinHuobi();
-        ch.Initial();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private void OnDestroy()
+    {
+        coinHuobi.Close();
+    }
 }

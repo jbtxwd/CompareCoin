@@ -1,4 +1,4 @@
-﻿﻿using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using BestHTTP.WebSocket;
 using System;
@@ -6,9 +6,10 @@ using ICSharpCode.SharpZipLib.GZip;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
+
 public class SubModel
 {
-    public SubModel(string _sub,long _id)
+    public SubModel(string _sub, long _id)
     {
         sub = _sub;
         id = _id;
@@ -30,7 +31,7 @@ public class ReqModel
 
 public class Pong
 {
-	public long pong;
+    public long pong;
 }
 
 public class TickDetail
@@ -46,15 +47,12 @@ public class Tick
     public List<List<float>> asks;
 }
 
-public class CoinHuobi
+public class CoinHuobi : Coin, ICoin
 {
-	const string socketAPI = "wss://api.huobi.com/ws";//BTC、LTC Websocket
-	const string socketBE = "wss://be.huobi.com/ws";//ETH、ETC Websocket行情请求地址
-    Dictionary<string, Depth> depths = new Dictionary<string, Depth>();//深度数据
-    List<string> concerCoins = new List<string>();
+    const string socketAPI = "wss://api.huobi.com/ws";//BTC、LTC Websocket
+    const string socketBE = "wss://be.huobi.com/ws";//ETH、ETC Websocket行情请求地址
     WebSocket webSocketBE;
-	WebSocket webSocketAPI;
-
+    WebSocket webSocketAPI;
 
     public CoinHuobi()
     {
@@ -67,10 +65,10 @@ public class CoinHuobi
         concerCoins.Add(Coins.LTC);
         concerCoins.Add(Coins.ETH);
         concerCoins.Add(Coins.ETC);
-		webSocketAPI = new WebSocket(new Uri(socketAPI));
-		webSocketAPI.OnOpen += OnWebSocketAPIOpen;
-		webSocketAPI.OnBinary += OnBinaryMessageReceived;
-		webSocketAPI.Open();
+        webSocketAPI = new WebSocket(new Uri(socketAPI));
+        webSocketAPI.OnOpen += OnWebSocketAPIOpen;
+        webSocketAPI.OnBinary += OnBinaryMessageReceived;
+        webSocketAPI.Open();
 
         webSocketBE = new WebSocket(new Uri(socketBE));
         webSocketBE.OnOpen += OnWebSocketBEOpen;
@@ -78,92 +76,92 @@ public class CoinHuobi
         webSocketBE.Open();
     }
 
-	void OnWebSocketAPIOpen(WebSocket _ws)
-	{
+    void OnWebSocketAPIOpen(WebSocket _ws)
+    {
         if (concerCoins.Contains(Coins.BTC))
             AddCoinDepth(Coins.BTC);
         if (concerCoins.Contains(Coins.LTC))
             AddCoinDepth(Coins.LTC);
-	}
+    }
 
     void OnWebSocketBEOpen(WebSocket _ws)
     {
         if (concerCoins.Contains(Coins.ETH))
             AddCoinDepth(Coins.ETH);
         if (concerCoins.Contains(Coins.ETC))
-			AddCoinDepth(Coins.ETC);
+            AddCoinDepth(Coins.ETC);
     }
 
     public void AddCoinDepth(string _name)
     {
         concerCoins.Add(_name);
-        switch(_name)
+        switch (_name)
         {
             case Coins.BTC:
                 if (webSocketAPI.IsOpen)
-				{
-					SubModel _sm = new SubModel("market.btccny.depth.step1", 10001);
-					string _json = JsonUtility.ToJson(_sm);
-					webSocketAPI.Send(_json);
-				}
-				else
-				{
-					Debug.Log("webSocketAPI not Opened!");
-				}
+                {
+                    SubModel _sm = new SubModel("market.btccny.depth.step1", 10001);
+                    string _json = JsonUtility.ToJson(_sm);
+                    webSocketAPI.Send(_json);
+                }
+                else
+                {
+                    Debug.Log("webSocketAPI not Opened!");
+                }
                 break;
             case Coins.LTC:
-				if (webSocketAPI.IsOpen)
-				{
-					SubModel _sm = new SubModel("market.ltccny.depth.step1", 10002);
-					string _json = JsonUtility.ToJson(_sm);
-					webSocketAPI.Send(_json);
-				}
-				else
-				{
-					Debug.Log("webSocketAPI not Opened!");
-				}
-				break;
-			case Coins.ETH:
-				if (webSocketBE.IsOpen)
-				{
-					SubModel _sm = new SubModel("market.ethcny.depth.step1", 10003);
-					string _json = JsonUtility.ToJson(_sm);
-					webSocketBE.Send(_json);
-				}
-				else
-				{
-					Debug.Log("webSocketBE not Opened!");
-				}
-				break;
+                if (webSocketAPI.IsOpen)
+                {
+                    SubModel _sm = new SubModel("market.ltccny.depth.step1", 10002);
+                    string _json = JsonUtility.ToJson(_sm);
+                    webSocketAPI.Send(_json);
+                }
+                else
+                {
+                    Debug.Log("webSocketAPI not Opened!");
+                }
+                break;
+            case Coins.ETH:
+                if (webSocketBE.IsOpen)
+                {
+                    SubModel _sm = new SubModel("market.ethcny.depth.step1", 10003);
+                    string _json = JsonUtility.ToJson(_sm);
+                    webSocketBE.Send(_json);
+                }
+                else
+                {
+                    Debug.Log("webSocketBE not Opened!");
+                }
+                break;
             case Coins.ETC:
-				if (webSocketBE.IsOpen)
-				{
-					SubModel _sm = new SubModel("market.etccny.depth.step1", 10004);
-					string _json = JsonUtility.ToJson(_sm);
-					webSocketBE.Send(_json);
-				}
-				else
-				{
-					Debug.Log("webSocketBE not Opened!");
-				}
-				break;
+                if (webSocketBE.IsOpen)
+                {
+                    SubModel _sm = new SubModel("market.etccny.depth.step1", 10004);
+                    string _json = JsonUtility.ToJson(_sm);
+                    webSocketBE.Send(_json);
+                }
+                else
+                {
+                    Debug.Log("webSocketBE not Opened!");
+                }
+                break;
         }
     }
 
     public void RemoveCoinDepth(string _name)
     {
         concerCoins.Remove(_name);
-		switch (_name)
-		{
-			case Coins.BTC:
-				break;
-			case Coins.LTC:
-				break;
-			case Coins.ETC:
-				break;
-			case Coins.ETH:
-				break;
-		}
+        switch (_name)
+        {
+            case Coins.BTC:
+                break;
+            case Coins.LTC:
+                break;
+            case Coins.ETC:
+                break;
+            case Coins.ETH:
+                break;
+        }
     }
     private void OnBinaryMessageReceived(WebSocket webSocket, byte[] message)
     {
@@ -186,31 +184,31 @@ public class CoinHuobi
             string _json = JsonConvert.SerializeObject(_pong);
             webSocket.Send(_json);
         }
-        else if(_dic.ContainsKey("tick"))
+        else if (_dic.ContainsKey("tick"))
         {
             TickDetail _td = JsonConvert.DeserializeObject<TickDetail>(_result);
             if (!string.IsNullOrEmpty(_td.ch))
             {
                 Debug.Log(_result);
-                string _coinName="";
+                string _coinName = "";
                 switch (_td.ch)
                 {
                     case "market.ethcny.depth.step1":
                         _coinName = Coins.ETH;
                         break;
-					case "market.etccny.depth.step1":
+                    case "market.etccny.depth.step1":
                         _coinName = Coins.ETC;
-						break;
-					case "market.ltccny.depth.step1":
+                        break;
+                    case "market.ltccny.depth.step1":
                         _coinName = Coins.LTC;
-						break;
-					case "market.btccny.depth.step1":
+                        break;
+                    case "market.btccny.depth.step1":
                         _coinName = Coins.BTC;
-						break;
+                        break;
                 }
                 Depth _dt = new Depth();
                 List<Price> _bidList = new List<Price>();
-                for (int i = 0; i < _td.tick.bids.Count;i++)
+                for (int i = 0; i < _td.tick.bids.Count; i++)
                 {
                     Price _p = new Price();
                     _p.price = _td.tick.bids[i][0];
@@ -219,12 +217,12 @@ public class CoinHuobi
                 }
                 _dt.bids = _bidList;
                 List<Price> _askList = new List<Price>();
-                for (int i = 0; i < _td.tick.asks.Count;i++)
+                for (int i = 0; i < _td.tick.asks.Count; i++)
                 {
-					Price _p = new Price();
-					_p.price = _td.tick.asks[i][0];
-					_p.count = _td.tick.asks[i][1];
-					_askList.Add(_p);
+                    Price _p = new Price();
+                    _p.price = _td.tick.asks[i][0];
+                    _p.count = _td.tick.asks[i][1];
+                    _askList.Add(_p);
                 }
                 _dt.asks = _askList;
                 _dt.time = long.Parse(_dic["ts"].ToString());
