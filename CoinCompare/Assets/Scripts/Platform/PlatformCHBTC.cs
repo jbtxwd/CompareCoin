@@ -9,17 +9,13 @@ public class PlatFormCHBTCDepthRequest
 	public string channel;
 }
 
-public class CHBTCDepthDetail
+public class DepthCHBTC
 {
-	public string channel;
-	public string date;
-	public Tick tick;
-}
-
-public class CHBTCTick
-{
-	public List<List<float>> bids;
-	public List<List<float>> asks;
+    public List<List<float>> asks { get; set; }
+    public List<List<float>> bids { get; set; }
+    public string channel { get; set; }
+    public string date { get; set; }
+    public int no { get; set; }
 }
 
 public class PlatformCHBTC : PlatForm, ICoin
@@ -85,13 +81,8 @@ public class PlatformCHBTC : PlatForm, ICoin
     void OnMessageReceived(WebSocket _ws, string _s)
     {
         Debug.Log(_s);
-        //string final = _s.Replace(@"","");
-        PlayerPrefs.SetString("fuck",_s);
-
-        string _fuck =_s.Replace(@"\\\",@"\");
-        Debug.Log(_fuck);
-        var _json = JsonConvert.DeserializeObject(_fuck) as Dictionary<string, object>;
-        Debug.Log(_json.Keys.Count);
+        if (_s.Contains("asks") && _s.Contains("bids"))
+            GetDepth(_s);
         /*if(_json.ContainsKey("channel")&& _json["channel"].ToString().Contains("depth"))
         {
             Debug.Log("---------");
@@ -101,8 +92,8 @@ public class PlatformCHBTC : PlatForm, ICoin
 
     void GetDepth(string _s)
     {
-        CHBTCDepthDetail _chdd = JsonConvert.DeserializeObject<CHBTCDepthDetail>(_s);
-        Debug.Log(_chdd.tick.asks.Count);
+        var _json = JsonConvert.DeserializeObject<DepthCHBTC>(_s);
+        Debug.Log(_json.asks.Count);
     }
 
 	void OnWebServerError(WebSocket _ws, System.Exception _ex)
