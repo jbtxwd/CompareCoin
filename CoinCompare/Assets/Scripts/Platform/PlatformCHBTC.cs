@@ -34,6 +34,9 @@ public class PlatformCHBTC : PlatForm, ICoin
             webSocket.OnMessage += OnMessageReceived;
             webSocket.Open();
             this.concerCoins.Add(Coins.BTC);
+            this.concerCoins.Add(Coins.LTC);
+            this.concerCoins.Add(Coins.BTS);
+            this.concerCoins.Add(Coins.ETH);
         }
     }
 
