@@ -27,4 +27,19 @@ public class PlatForm
     {
         isConcer = _isConcer;
     }
+
+    public virtual string GetCoinName(string _par)
+    {
+        if (_par.Contains(Coins.BTC.ToLower()))
+            return Coins.BTC;
+        if (_par.Contains(Coins.BTS.ToLower()))
+            return Coins.BTS;
+        if (_par.Contains(Coins.LTC.ToLower()))
+            return Coins.LTC;
+        if (_par.Contains(Coins.ETC.ToLower()))
+            return Coins.ETC;
+        if (_par.Contains(Coins.ETH.ToLower()))
+            return Coins.ETH;
+        return "";
+    }
 }

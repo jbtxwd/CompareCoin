@@ -80,21 +80,37 @@ public class PlatformCHBTC : PlatForm, ICoin
 
     void OnMessageReceived(WebSocket _ws, string _s)
     {
-        Debug.Log(_s);
         if (_s.Contains("asks") && _s.Contains("bids"))
             GetDepth(_s);
-        /*if(_json.ContainsKey("channel")&& _json["channel"].ToString().Contains("depth"))
-        {
-            Debug.Log("---------");
-            GetDepth(_s);
-        }*/
     }
 
     void GetDepth(string _s)
     {
-        var _json = JsonConvert.DeserializeObject<DepthCHBTC>(_s);
-        Debug.Log(_json.asks.Count);
+        DepthCHBTC _json = JsonConvert.DeserializeObject<DepthCHBTC>(_s);
+        Depth _dt = new Depth();
+        _dt.time = long.Parse(_json.date);
+        string _coinName = GetCoinName(_json.channel);
+        List<Price> _bidList = new List<Price>();
+        for (int i = 0; i < _json.bids.Count; i++)
+        {
+            Price _p = new Price();
+            _p.price = _json.bids[i][0];
+            _p.count = _json.bids[i][1];
+            _bidList.Add(_p);
+        }
+        _dt.bids = _bidList;
+        List<Price> _askList = new List<Price>();
+        for (int i = 0; i < _json.asks.Count; i++)
+        {
+            Price _p = new Price();
+            _p.price = _json.asks[i][0];
+            _p.count = _json.asks[i][1];
+            _askList.Add(_p);
+        }
+        _dt.asks = _askList;
+        depths[_coinName] = _dt;
     }
+
 
 	void OnWebServerError(WebSocket _ws, System.Exception _ex)
 	{
