@@ -54,11 +54,6 @@ public class PlatformHuobi : PlatForm, ICoin
     WebSocket webSocketBE;
     WebSocket webSocketAPI;
 
-    public PlatformHuobi()
-    {
-
-    }
-
     public override void Initial()
     {
         concerCoins.Add(Coins.BTC);
@@ -74,6 +69,7 @@ public class PlatformHuobi : PlatForm, ICoin
         webSocketBE.OnOpen += OnWebSocketBEOpen;
         webSocketBE.OnBinary += OnBinaryMessageReceived;
         webSocketBE.Open();
+        this.platFormName = "火币";
     }
 
     void OnWebSocketAPIOpen(WebSocket _ws)
@@ -189,7 +185,6 @@ public class PlatformHuobi : PlatForm, ICoin
             TickDetail _td = JsonConvert.DeserializeObject<TickDetail>(_result);
             if (!string.IsNullOrEmpty(_td.ch))
             {
-                Debug.Log(_result);
                 string _coinName = "";
                 switch (_td.ch)
                 {
@@ -225,6 +220,7 @@ public class PlatformHuobi : PlatForm, ICoin
                     _askList.Add(_p);
                 }
                 _dt.asks = _askList;
+                _dt.Sort();
                 _dt.time = long.Parse(_dic["ts"].ToString());
                 depths[_coinName] = _dt;
             }

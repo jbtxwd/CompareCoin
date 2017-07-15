@@ -34,10 +34,12 @@ public class PlatformCHBTC : PlatForm, ICoin
             webSocket.OnMessage += OnMessageReceived;
             webSocket.Open();
             this.concerCoins.Add(Coins.BTC);
-            this.concerCoins.Add(Coins.LTC);
             this.concerCoins.Add(Coins.BTS);
+     
             this.concerCoins.Add(Coins.ETH);
+            this.concerCoins.Add(Coins.ETC);
         }
+        this.platFormName = "中国比特币";
     }
 
     void OnWebServerOpen(WebSocket _ws)
@@ -111,6 +113,7 @@ public class PlatformCHBTC : PlatForm, ICoin
             _askList.Add(_p);
         }
         _dt.asks = _askList;
+        _dt.Sort();
         depths[_coinName] = _dt;
     }
 

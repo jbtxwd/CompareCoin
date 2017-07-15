@@ -7,6 +7,7 @@ public class PlatForm
 	public Dictionary<string, Depth> depths = new Dictionary<string, Depth>();//深度数据
 	public List<string> concerCoins = new List<string>();
     protected bool isConcer = true;
+    public string platFormName = "";
     public virtual void Initial()
     {
         
