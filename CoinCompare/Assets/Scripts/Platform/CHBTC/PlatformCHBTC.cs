@@ -21,7 +21,7 @@ public class DepthCHBTC
 public class PlatformCHBTC : PlatForm, ICoin
 {
     const string socketURL = "wss://api.chbtc.com:9999/websocket";
-	WebSocket webSocket;
+    WebSocket webSocket;
 
     public override void Initial()
     {
@@ -35,9 +35,10 @@ public class PlatformCHBTC : PlatForm, ICoin
             webSocket.Open();
             this.concerCoins.Add(Coins.BTC);
             this.concerCoins.Add(Coins.BTS);
-     
+
             this.concerCoins.Add(Coins.ETH);
             this.concerCoins.Add(Coins.ETC);
+            GetAccountInfo();
         }
         this.platFormName = "中国比特币";
     }
@@ -60,15 +61,15 @@ public class PlatformCHBTC : PlatForm, ICoin
             case Coins.BTC:
                 _ccr.channel = "btc_cny_depth";
                 break;
-			case Coins.LTC:
-				_ccr.channel = "ltc_cny_depth";
-				break;
+            case Coins.LTC:
+                _ccr.channel = "ltc_cny_depth";
+                break;
             case Coins.ETH:
-				_ccr.channel = "eth_cny_depth";
-				break;
-			case Coins.ETC:
-				_ccr.channel = "etc_cny_depth";
-				break;
+                _ccr.channel = "eth_cny_depth";
+                break;
+            case Coins.ETC:
+                _ccr.channel = "etc_cny_depth";
+                break;
             case Coins.BTS:
                 _ccr.channel = "bts_cny_depth";
                 break;
@@ -118,13 +119,25 @@ public class PlatformCHBTC : PlatForm, ICoin
     }
 
 
-	void OnWebServerError(WebSocket _ws, System.Exception _ex)
-	{
+    void OnWebServerError(WebSocket _ws, System.Exception _ex)
+    {
         Debug.Log("onerror" + _ex.ToString());
-	}
+    }
 
-	private void OnWebSocketClosed(WebSocket _ws, System.UInt16 _code, string _message)
-	{
-		Debug.Log("OnWebSocketClosed");
-	}
+    private void OnWebSocketClosed(WebSocket _ws, System.UInt16 _code, string _message)
+    {
+        Debug.Log("OnWebSocketClosed");
+    }
+
+    //string accesskey = "10823b7c-bf93-4dd0-b5af-83dc487a9f7e";
+    //string secretkey = "2ffdfa1e-ba2c-42c5-98fc-61679b8c30d4";
+    //string baseURL = "https://trade.chbtc.com/api/";
+    public void GetAccountInfo()
+    {
+        string _url = SignCHBTC.testGetAccountInfo();
+        new BestHTTP.HTTPRequest(new System.Uri(_url), (_request, _response) =>
+         {
+             Debug.Log(_response.DataAsText);
+         }).Send();
+    }
 }
