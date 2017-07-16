@@ -137,7 +137,9 @@ public class PlatformCHBTC : PlatForm, ICoin
         string _url = SignCHBTC.testGetAccountInfo();
         new BestHTTP.HTTPRequest(new System.Uri(_url), (_request, _response) =>
          {
+             AccountInfoCHBTC _ai = JsonConvert.DeserializeObject<AccountInfoCHBTC>(_response.DataAsText);
              Debug.Log(_response.DataAsText);
+             Debug.Log(_ai.result.totalAssets);
          }).Send();
     }
 }

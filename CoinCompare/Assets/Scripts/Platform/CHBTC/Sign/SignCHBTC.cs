@@ -8,7 +8,9 @@ using System.IO;
 public class SignCHBTC
 {
     private static String encodingCharset = "UTF-8";
-
+    private static string accesskey = "10823b7c-bf93-4dd0-b5af-83dc487a9f7e";
+    private static string secretkey = "2ffdfa1e-ba2c-42c5-98fc-61679b8c30d4";
+    private static string baseURL = "https://trade.chbtc.com/api/";
     /**
      *
      * @param aValue  要加密的文字
@@ -122,10 +124,7 @@ public class SignCHBTC
      * 其他方法调用及返回说明请查看API交易文档
      */
     public static string testGetAccountInfo() {
-        string accesskey = "10823b7c-bf93-4dd0-b5af-83dc487a9f7e";
-        string secretkey = "2ffdfa1e-ba2c-42c5-98fc-61679b8c30d4";
 
-        string baseURL = "https://trade.chbtc.com/api/";
         string param = "method=getAccountInfo&accesskey=" + accesskey;
 
         secretkey = digest(secretkey);
@@ -135,44 +134,6 @@ public class SignCHBTC
         long stamp = (DateTime.UtcNow.Ticks - timeStamp.Ticks) / 10000; //注意这里有时区问题，用now就要减掉8个小时
 
         baseURL += "getAccountInfo?" + param + "&sign=" + sign + "&reqTime=" + stamp;
-        UnityEngine.Debug.Log(baseURL + "--------" + UnityEngine.Time.time);
         return baseURL;
-        //return HttpConnectToServer(baseURL);
-    }
-
-    /**
-     * HttpConnectToServer
-     */
-    public static string HttpConnectToServer(string url) {
-        return url;
-
-        //创建请求
-        HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
-        request.Method = "POST";
-        request.ContentType = "application/x-www-form-urlencoded";
-        //读取返回消息
-        string res = string.Empty;
-        try {
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-            res = reader.ReadToEnd();
-            reader.Close();
-        } catch (Exception ex) {
-            UnityEngine.Debug.Log(UnityEngine.Time.time);
-            UnityEngine.Debug.Log(ex.ToString() + UnityEngine.Time.time);
-            return null;//连接服务器失败
-        }
-
-        return res;
-    }
-
-
-
-    public static void Main(string[] args)
-    {
-        // TODO: Implement Functionality Here
-        //Console.WriteLine(hmacSign("administratorguoflyskyguosj","guosj"));
-        //Console.WriteLine(digest("administratorguoflyskyguosj"));
-        Console.WriteLine(testGetAccountInfo());
     }
 }
