@@ -48,13 +48,17 @@ public class PlatFormManager : MonoBehaviour
         {
             List<Price> _sell = _sellPlatForm.depths[_coinName].bids;
             List<Price> _buy = _buyPlatForm.depths[_coinName].asks;
-            //if (_sell[0].price > _buy[0].price)
-            //    Debug.Log("虚拟币=" + _coinName + "卖价=" + _sell[0].price + "买价=" + _buy[0].price + "卖方=" + _sellPlatForm.platFormName + "买方=" + _buyPlatForm.platFormName
-            //        + "收益=" + ((_sell[0].price - _buy[0].price) / _buy[0].price));
+            if (_sell[0].price > _buy[0].price)
+            {
+                float _count = _sell[0].count > _buy[0].count ? _buy[0].count : _sell[0].count;
+                float _earn = (_sell[0].price - _buy[0].price) * _count;
+                Debug.Log("虚拟币=" + _coinName + "卖价=" + _sell[0].price + "买价=" + _buy[0].price + "卖方=" + _sellPlatForm.platFormName + "买方=" + _buyPlatForm.platFormName
+                + "收益=" + ((_sell[0].price - _buy[0].price) / _buy[0].price)+"预计收益="+ _earn);
+            }
         }
         else
         {
-            //Debug.Log("不兑"+ _coinName);
+            Debug.Log("不兑"+ _coinName);
         }
     }
 }
