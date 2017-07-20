@@ -9,10 +9,10 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
-public class HuobiDemo
+public class SignHuobi
 {
-    private string accessKey = "";
-    private string secretKey = "";
+    private string accessKey = "68070fe8-5ca496e2-43b98fbc-e56c9";
+    private string secretKey = "96b3c137-5bbbb6f8-3ef76b50-974e7";
 
     private const string domain = "be.huobi.com";
     private string baseUrl = "https://be.huobi.com";
@@ -33,10 +33,12 @@ public class HuobiDemo
         var sign = CreateSign(method, action, secretKey, data);
         data["Signature"] = sign;
         var url = baseUrl + action + "?" + ConvertQueryString(data, true);
-        int statusCode;
-        var result = RequestDataSync(url, method, null, null, out statusCode);
-        Debug.WriteLine(result);
-        return result;
+        //int statusCode;
+        //UnityEngine.Debug.Log(url);
+        //var result = RequestDataSync(url, method, null, null, out statusCode);
+        //Debug.WriteLine(result);
+        //return result;
+        return url;
     }
 
     private string GetDateTime()
@@ -239,11 +241,12 @@ public class HuobiDemo
         }
         catch (WebException ex)
         {
-            using (HttpWebResponse response = ex.Response as HttpWebResponse)
-            {
-                resp = GetResponseBody(response);
-                httpCode = (int)response.StatusCode;
-            }
+            UnityEngine.Debug.Log(ex.ToString());
+            //using (HttpWebResponse response = ex.Response as HttpWebResponse)
+            //{
+            //    resp = GetResponseBody(response);
+            //    httpCode = (int)response.StatusCode;
+            //}
         }
         return resp;
     }

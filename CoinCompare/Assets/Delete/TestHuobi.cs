@@ -1,19 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using BestHTTP;
 public class TestHuobi : MonoBehaviour
 {
-    PlatformHuobi coinHuobi;
+    SignHuobi _signhuobi;
 	void Start () 
     {
-        coinHuobi = new PlatformHuobi();
-        coinHuobi.Initial();
+        _signhuobi = new SignHuobi(); ;
 	}
 
-    private void OnDestroy()
+    private void Update()
     {
-        if(coinHuobi!=null)
-            coinHuobi.Close();
+        if (Input.GetKeyDown("k"))
+        {
+            Debug.Log(_signhuobi.Accounts());
+           HTTPRequest _hr= new HTTPRequest(new System.Uri(_signhuobi.Accounts()), (requset, response) =>
+             {
+                 Debug.Log(response.DataAsText);
+             }).Send();
+        }
     }
 }
