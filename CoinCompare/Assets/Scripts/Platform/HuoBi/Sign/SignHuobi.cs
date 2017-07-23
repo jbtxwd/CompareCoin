@@ -11,8 +11,8 @@ using System.Text;
 
 public class SignHuobi
 {
-    private string accessKey = "68070fe8-5ca496e2-43b98fbc-e56c9";
-    private string secretKey = "96b3c137-5bbbb6f8-3ef76b50-974e7";
+    private string accessKey = "cb53a6bc-3d4e63ec-5226c2ac-2c764";
+    private string secretKey = "db7f0211-d2b90c58-c9f9ffca-ff6b4";
 
     private const string domain = "be.huobi.com";
     private string baseUrl = "https://be.huobi.com";
@@ -60,10 +60,11 @@ public class SignHuobi
         var sign = CreateSign(method, action, secretKey, data);
         data["Signature"] = sign;
         var url = baseUrl + action + "?" + ConvertQueryString(data, true);
-        int statusCode;
-        var result = RequestDataSync(url, method, null, null, out statusCode);
-        Debug.WriteLine(result);
-        return result;
+        return url;
+        //int statusCode;
+        //var result = RequestDataSync(url, method, null, null, out statusCode);
+        //Debug.WriteLine(result);
+        //return result;
     }
 
     public string NewOrder(string accountId, decimal amount, decimal price, string type)

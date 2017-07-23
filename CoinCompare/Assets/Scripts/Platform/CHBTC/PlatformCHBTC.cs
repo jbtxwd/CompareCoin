@@ -45,6 +45,7 @@ public class PlatformCHBTC : PlatForm, ICoin
 
     void OnWebServerOpen(WebSocket _ws)
     {
+        Debug.Log(this.platFormName + "连接成功");
         for (int i = 0; i < concerCoins.Count; i++)
         {
             AddChannel(concerCoins[i]);

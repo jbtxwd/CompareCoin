@@ -58,7 +58,10 @@ public class PlatFormManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("不兑"+ _coinName);
+            //if(!_sellPlatForm.depths.ContainsKey(_coinName))
+            //    Debug.Log(_sellPlatForm.platFormName +"没有货币"+ _coinName);
+            //if (!_buyPlatForm.depths.ContainsKey(_coinName))
+            //    Debug.Log(_buyPlatForm.platFormName + "没有货币" + _coinName);
         }
     }
 }

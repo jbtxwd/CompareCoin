@@ -74,6 +74,7 @@ public class PlatformHuobi : PlatForm, ICoin
 
     void OnWebSocketAPIOpen(WebSocket _ws)
     {
+        Debug.Log(this.platFormName + "1连接成功");
         if (concerCoins.Contains(Coins.BTC))
             AddCoinDepth(Coins.BTC);
         if (concerCoins.Contains(Coins.LTC))
@@ -82,6 +83,7 @@ public class PlatformHuobi : PlatForm, ICoin
 
     void OnWebSocketBEOpen(WebSocket _ws)
     {
+        Debug.Log(this.platFormName + "2连接成功");
         if (concerCoins.Contains(Coins.ETH))
             AddCoinDepth(Coins.ETH);
         if (concerCoins.Contains(Coins.ETC))
