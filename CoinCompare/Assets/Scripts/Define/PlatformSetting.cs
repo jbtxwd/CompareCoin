@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlatFormSetting 
+public class PlatformSetting 
 {
     public string platformName;
     public string key;

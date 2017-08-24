@@ -11,15 +11,15 @@ public class PlatformSettingEditor
     // Use this for initialization
     static void InitialPlatformSetting () 
     {
-        List<PlatFormSetting> _psList = new List<PlatFormSetting>();
+        List<PlatformSetting> _psList = new List<PlatformSetting>();
 
-        PlatFormSetting _ps19800 = new PlatFormSetting();
+        PlatformSetting _ps19800 = new PlatformSetting();
         _ps19800.platformName = "19800";
         _ps19800.key = "1";
         _ps19800.security = "4";
         _psList.Add(_ps19800);
 
-		PlatFormSetting _psjubi = new PlatFormSetting();
+		PlatformSetting _psjubi = new PlatformSetting();
 		_psjubi.platformName = "jubi";
 		_psjubi.key = "1";
 		_psjubi.security = "4";
