@@ -8,7 +8,8 @@ public class TestHuobi : MonoBehaviour
     SignHuobi _signhuobi;
 	void Start () 
     {
-        _signhuobi = new SignHuobi(); ;
+        //_signhuobi = new SignHuobi(); ;
+        Debug.Log(TaxData.Singleton.data.Count);
 	}
 
     private void Update()
