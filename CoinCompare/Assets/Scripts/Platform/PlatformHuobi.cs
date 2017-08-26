@@ -69,7 +69,7 @@ public class PlatformHuobi : PlatForm, ICoin
         webSocketBE.OnOpen += OnWebSocketBEOpen;
         webSocketBE.OnBinary += OnBinaryMessageReceived;
         webSocketBE.Open();
-        this.platFormName = "火币";
+        this.platFormName = Platforms.phuobi;
     }
 
     void OnWebSocketAPIOpen(WebSocket _ws)

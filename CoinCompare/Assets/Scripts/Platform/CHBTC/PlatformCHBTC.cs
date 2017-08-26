@@ -40,7 +40,7 @@ public class PlatformCHBTC : PlatForm, ICoin
             this.concerCoins.Add(Coins.ETC);
             GetAccountInfo();
         }
-        this.platFormName = "中国比特币";
+        this.platFormName = Platforms.pchbtc;
     }
 
     void OnWebServerOpen(WebSocket _ws)
