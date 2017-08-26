@@ -6,6 +6,7 @@ public class CommonTool
         //文件流信息
         StreamWriter _sw;
         FileInfo _t = new FileInfo(path + "//" + name);
+        UnityEngine.Debug.Log(_t);
         if (!_t.Exists)
         {
             //如果此文件不存在则创建
@@ -13,8 +14,8 @@ public class CommonTool
         }
         else
         {
-            //如果此文件存在则打开
-            _sw = _t.AppendText();
+            _t.Delete();
+            _sw = _t.CreateText();
         }
         //以行的形式写入信息
         _sw.WriteLine(info);
